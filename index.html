@@ -4,8 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Schlaf-Zeitkonto</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -30,7 +29,7 @@
   }
 
   body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: -apple-system, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -51,7 +50,7 @@
   }
 
   h1 {
-    font-family: 'DM Mono', monospace;
+    font-family: Arial, sans-serif;
     font-size: 1.5rem;
     font-weight: 500;
     letter-spacing: -0.02em;
@@ -85,7 +84,7 @@
   }
 
   .summary-card .value {
-    font-family: 'DM Mono', monospace;
+    font-family: Arial, sans-serif;
     font-size: 1.4rem;
     font-weight: 500;
     color: var(--text);
@@ -141,8 +140,8 @@
   input[type="date"],
   input[type="number"],
   input[type="text"] {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
+    font-family: -apple-system, Arial, sans-serif;
+    font-size: 16px;
     height: 36px;
     padding: 0 10px;
     background: var(--surface2);
@@ -166,7 +165,7 @@
     color: #fff;
     border: none;
     border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
+    font-family: Arial, sans-serif;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -218,13 +217,13 @@
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: var(--surface2); }
 
-  .mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+  .mono { font-family: Arial, sans-serif; font-size: 13px; }
 
   .badge {
     display: inline-block;
     padding: 2px 8px;
     border-radius: 5px;
-    font-family: 'DM Mono', monospace;
+    font-family: Arial, sans-serif;
     font-size: 12px;
     font-weight: 500;
   }
@@ -294,7 +293,7 @@
   <div class="form-card">
     <div class="soll-row">
       <label>Tages-Soll:</label>
-      <input type="text" id="soll-input" value="8:00" placeholder="8:00" maxlength="5" style="width:70px; font-family:'DM Mono',monospace;">
+      <input type="text" id="soll-input" value="8:00" placeholder="8:00" maxlength="5" style="width:70px; font-family:Arial,sans-serif;">
       <span style="font-size:13px; color:var(--muted);">h:mm</span>
     </div>
     <div class="form-row">
@@ -304,11 +303,7 @@
       </div>
       <div class="field">
         <label>Geschlafen (h:mm)</label>
-        <input type="text" id="ist-input" placeholder="z.B. 8:15" maxlength="5" style="font-family:'DM Mono',monospace;">
-      </div>
-      <div class="field" style="max-width:180px;">
-        <label>Notiz</label>
-        <input type="text" id="note-input" placeholder="optional" maxlength="40">
+        <input type="text" id="ist-input" placeholder="z.B. 8:15" maxlength="5" style="font-family:Arial,sans-serif;">
       </div>
       <button class="add-btn" onclick="addEntry()">Eintragen</button>
     </div>
@@ -324,12 +319,11 @@
           <th>Soll</th>
           <th>Tag +/−</th>
           <th>Konto</th>
-          <th>Notiz</th>
           <th></th>
         </tr>
       </thead>
       <tbody id="entries-body">
-        <tr><td colspan="7" class="empty">Noch keine Einträge — fang heute an.</td></tr>
+        <tr><td colspan="6" class="empty">Noch keine Einträge — fang heute an.</td></tr>
       </tbody>
     </table>
   </div>
@@ -404,7 +398,7 @@ document.getElementById('soll-input').addEventListener('change', function() {
 function addEntry() {
   const dateVal = document.getElementById('date-input').value;
   const istVal = parseHMM(document.getElementById('ist-input').value);
-  const noteVal = document.getElementById('note-input').value.trim();
+  const noteVal = '';
   const err = document.getElementById('form-error');
 
   if (!dateVal) { err.textContent = 'Bitte Datum angeben.'; err.style.display='block'; return; }
@@ -418,7 +412,6 @@ function addEntry() {
 
   entries.sort((a,b) => a.date.localeCompare(b.date));
   document.getElementById('ist-input').value = '';
-  document.getElementById('note-input').value = '';
   save();
   render();
 }
@@ -437,7 +430,7 @@ function render() {
   const kontoEl = document.getElementById('sum-konto');
 
   if (entries.length === 0) {
-    body.innerHTML = '<tr><td colspan="7" class="empty">Noch keine Einträge — fang heute an.</td></tr>';
+    body.innerHTML = '<tr><td colspan="6" class="empty">Noch keine Einträge — fang heute an.</td></tr>';
     sollEl.textContent = '—'; istEl.textContent = '—'; kontoEl.textContent = '—';
     kontoEl.className = 'value';
     return;
@@ -461,7 +454,6 @@ function render() {
       <td class="mono" style="color:var(--muted)">${fmtH(e.soll)}</td>
       <td><span class="badge ${dc}">${ds}${fmtH(diff)}</span></td>
       <td><span class="badge ${kc}">${ks}${fmtH(running)}</span></td>
-      <td class="note-cell" title="${e.note}">${e.note || ''}</td>
       <td><button class="del-btn" onclick="deleteEntry('${e.date}')" title="Löschen">✕</button></td>
     </tr>`;
   });
